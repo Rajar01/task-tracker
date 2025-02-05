@@ -42,6 +42,40 @@ func AddTask(description string) {
 	randomizer := rand.New(rand.NewSource(10))
 	var task Task = Task{Id: randomizer.Uint32(), Description: description, Status: TODO, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	tasks = append(tasks, task)
+	WriteTasksToJson(tasks)
+}
+
+func UpdateTask(id uint32, description string) {
+	for i := range tasks {
+		if tasks[i].Id == id {
+			tasks[i].Description = description
+			tasks[i].UpdatedAt = time.Now()
+			break
+		}
+	}
+
+	WriteTasksToJson(tasks)
+}
+
+func DeleteTask(id uint) {}
+
+func MarkTask(id uint32, status Status) {
+	for i := range tasks {
+		if tasks[i].Id == id {
+			tasks[i].Status = status
+			tasks[i].UpdatedAt = time.Now()
+			break
+		}
+	}
+
+	WriteTasksToJson(tasks)
+}
+
+func GetTasks() {}
+
+func GetTasksByStatus(status Status) {}
+
+func WriteTasksToJson(tasks []Task) {
 	tasksJson, err := json.Marshal(tasks)
 	if err != nil {
 		log.Fatalf("Failed to convert task object to json string\n\n%v", err)
@@ -52,16 +86,6 @@ func AddTask(description string) {
 		log.Fatalf("Failed to write task to %s file\n\n%v", FILENAME, err)
 	}
 }
-
-func UpdateTask(id uint, description string) {}
-
-func DeleteTask(id uint) {}
-
-func MarkTask(id uint, status Status) {}
-
-func GetTasks() {}
-
-func GetTasksByStatus(status Status) {}
 
 const FILENAME = "tasks.json"
 
