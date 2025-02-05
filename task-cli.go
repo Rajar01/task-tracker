@@ -80,9 +80,19 @@ func MarkTask(id uint32, status Status) {
 	WriteTasksToJson(tasks)
 }
 
-func GetTasks() {}
+func GetTasks() {
+	for _, task := range tasks {
+		fmt.Printf("%+v\n", task)
+	}
+}
 
-func GetTasksByStatus(status Status) {}
+func GetTasksByStatus(status Status) {
+	for _, task := range tasks {
+		if task.Status == status {
+			fmt.Printf("%+v\n", task)
+		}
+	}
+}
 
 func WriteTasksToJson(tasks []Task) {
 	tasksJson, err := json.Marshal(tasks)
