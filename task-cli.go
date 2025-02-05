@@ -57,7 +57,16 @@ func UpdateTask(id uint32, description string) {
 	WriteTasksToJson(tasks)
 }
 
-func DeleteTask(id uint) {}
+func DeleteTask(id uint32) {
+	var filteredTasks []Task
+	for _, task := range tasks {
+		if task.Id != id {
+			filteredTasks = append(filteredTasks, task)
+		}
+	}
+
+	WriteTasksToJson(filteredTasks)
+}
 
 func MarkTask(id uint32, status Status) {
 	for i := range tasks {
