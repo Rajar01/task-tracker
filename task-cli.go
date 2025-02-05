@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -106,6 +109,21 @@ func WriteTasksToJson(tasks []Task) {
 	}
 }
 
+func StringToStatus(status string) (Status, error) {
+	status = strings.ToLower(status)
+
+	switch status {
+	case "todo":
+		return TODO, nil
+	case "in-progress":
+		return INPROGRESS, nil
+	case "done":
+		return DONE, nil
+	default:
+		return -1, errors.New("Unknown task status")
+	}
+}
+
 const FILENAME = "tasks.json"
 
 var tasks []Task
@@ -132,4 +150,51 @@ func init() {
 }
 
 func main() {
+	switch os.Args[1] {
+	case "add":
+		if len(os.Args) < 3 {
+			log.Fatal("Usage: task-cli add <description1> <description2> ...")
+		}
+
+		for _, description := range os.Args[2:] {
+			AddTask(description)
+		}
+	case "update":
+		if len(os.Args) != 4 {
+			log.Fatal("Usage: task-cli update <id> <description>")
+		}
+
+		taskId, err := strconv.ParseUint(os.Args[2], 10, 32)
+		if err != nil {
+			log.Fatal("Usage: task-cli update <id> <description>")
+		}
+
+		UpdateTask(uint32(taskId), os.Args[3])
+	case "delete":
+		if len(os.Args) != 3 {
+			log.Fatal("Usage: task-cli delete <id>")
+		}
+
+		taskId, err := strconv.ParseUint(os.Args[2], 10, 32)
+		if err != nil {
+			log.Fatal("Usage: task-cli delete <id>")
+		}
+
+		DeleteTask(uint32(taskId))
+	case "list":
+		if len(os.Args) > 3 {
+			log.Fatal("Usage: task-cli list <status>")
+		} else if len(os.Args) == 3 {
+			status, err := StringToStatus(os.Args[2])
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			GetTasksByStatus(status)
+		} else {
+			GetTasks()
+		}
+	default:
+		log.Fatal("Unknown command")
+	}
 }
