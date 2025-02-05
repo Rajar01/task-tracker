@@ -197,6 +197,28 @@ func main() {
 		} else {
 			GetTasks()
 		}
+	case "mark-in-progress":
+		if len(os.Args) != 3 {
+			log.Fatal("Usage: task-cli mark-in-progress <id>")
+		}
+
+		taskId, err := strconv.ParseUint(os.Args[2], 10, 32)
+		if err != nil {
+			log.Fatal("Usage: task-cli mark-in-progress <id>")
+		}
+
+		MarkTask(uint32(taskId), INPROGRESS)
+	case "mark-done":
+		if len(os.Args) != 3 {
+			log.Fatal("Usage: task-cli mark-done <id>")
+		}
+
+		taskId, err := strconv.ParseUint(os.Args[2], 10, 32)
+		if err != nil {
+			log.Fatal("Usage: task-cli mark-done <id>")
+		}
+
+		MarkTask(uint32(taskId), DONE)
 	default:
 		log.Fatal("Unknown command")
 	}
