@@ -44,9 +44,12 @@ type Task struct {
 }
 
 func AddTask(description string) {
-	var task Task = Task{Id: randomizer.Uint32(), Description: description, Status: TODO, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+	taskId := randomizer.Uint32()
+	var task Task = Task{Id: taskId, Description: description, Status: TODO, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	tasks = append(tasks, task)
 	WriteTasksToJson(tasks)
+
+	fmt.Printf("Task added successfully (ID: %d)\n", taskId)
 }
 
 func UpdateTask(id uint32, description string) {
