@@ -12,6 +12,8 @@ import (
 	"time"
 )
 
+var randomizer *rand.Rand
+
 type Status int
 
 const (
@@ -42,7 +44,6 @@ type Task struct {
 }
 
 func AddTask(description string) {
-	randomizer := rand.New(rand.NewSource(10))
 	var task Task = Task{Id: randomizer.Uint32(), Description: description, Status: TODO, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	tasks = append(tasks, task)
 	WriteTasksToJson(tasks)
@@ -129,6 +130,8 @@ const FILENAME = "tasks.json"
 var tasks []Task
 
 func init() {
+	randomizer = rand.New(rand.NewSource(10))
+
 	if _, err := os.Stat(FILENAME); os.IsNotExist(err) {
 		file, err := os.Create(FILENAME)
 		if err != nil {
